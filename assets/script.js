@@ -42,7 +42,7 @@ searchBtn.addEventListener("click", function(event){
 
 //uses the open weather API to grab current weather forecast and coordinates
 function getCurrentWeather() {
-    var locationUrl = 'http://api.openweathermap.org/data/2.5/weather?q=' + cityName + ',' + stateCode + '&appid=' + APIkey + '&units=imperial';
+    var locationUrl = 'https://api.openweathermap.org/data/2.5/weather?q=' + cityName + ',' + stateCode + '&appid=' + APIkey + '&units=imperial';
     fetch(locationUrl)
       .then(function (response) {
         return response.json();
