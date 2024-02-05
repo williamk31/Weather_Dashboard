@@ -9,18 +9,28 @@ var currentWeather = document.querySelector("#current-weather-container");
 var forecast = document.querySelector("#forecast-container");
 var searchBtn = document.querySelector(".btn");
 var searchHistory = JSON.parse(localStorage.getItem("city-name")) || [];
+var searchHistBtns = "";
+var today = dayjs();
+var currentDate = today.format("dddd, MMMM D YYYY, h:mm a")
 
 //Display search history from local storage
 function showSearchHistory() {
-    var searchHistBtns = document.querySelector("#search-history");
+    searchHistBtns = document.querySelector("#search-history");
     for (let i=0; i<searchHistory.length; i++) {
-        var searchBtn = document.createElement("button");
-        searchBtn.setAttribute("class", "btn btn-secondary btn-lg");
-        searchBtn.innerHTML = searchHistory[i];
-        searchHistBtns.appendChild(searchBtn);
+        var searchHistBtn = document.createElement("button");
+        searchHistBtn.setAttribute("class", "btn btn-secondary btn-lg p-2 m-1");
+        searchHistBtn.textContent = searchHistory[i];
+        searchHistBtns.appendChild(searchHistBtn);
     }
 }
 showSearchHistory();
+
+searchHistBtns.addEventListener("click", function(event){
+    if (event.target.tagName === "BUTTON"){
+        cityName = event.target.innerHTML;
+        getCurrentWeather();
+    }
+})
 
 //Get city name from user input 
 searchBtn.addEventListener("click", function(event){
@@ -37,7 +47,7 @@ searchBtn.addEventListener("click", function(event){
 });
 //uses the open weather API to grab current weather forecast and coordinates
 function getCurrentWeather() {
-    var locationUrl = 'http://api.openweathermap.org/data/2.5/weather?q=' + cityName + ',' + stateCode + '&appid=' + APIkey;
+    var locationUrl = 'http://api.openweathermap.org/data/2.5/weather?q=' + cityName + ',' + stateCode + '&appid=' + APIkey + '&units=imperial';
     fetch(locationUrl)
       .then(function (response) {
         return response.json();
@@ -52,7 +62,7 @@ function getCurrentWeather() {
         <div class="card" style="width: 50rem;">
         <img src="https://openweathermap.org/img/w/${data.weather[0].icon}.png" class="w-25" alt="...">
         <div class="card-body">
-            <h5 class="card-title">City Name: ${data.name}</h5>
+            <h5 class="card-title">${data.name}; ${currentDate}</h5>
             <p class="card-text">Humidity: ${data.main.humidity}</p>
         </div>
         </div>
@@ -69,7 +79,7 @@ function getCurrentWeather() {
 
 //uses coordinates to get weather with the OpenWeather API
 function getWeather() {
-    var weatherUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + cityLat + '&lon='+ cityLon + '&units=imperial&appid=' + APIkey;
+    var weatherUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + cityLat + '&lon='+ cityLon + '&units=imperial&appid=' + APIkey + '&units=imperial';
     fetch(weatherUrl)
       .then(function (response) {
         return response.json();
